@@ -1,5 +1,4 @@
 #ifndef WILDFIRE_VALUES
-
 #define WILDFIRE_VALUES
 
 #define ALIVE 'Y'

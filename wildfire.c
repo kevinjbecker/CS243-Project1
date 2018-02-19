@@ -15,7 +15,7 @@
 #include <stdlib.h> // EXIT_SUCCESS
 #include <time.h> //time
 #include "run_wildfire.h" // runIterataions, runIndeterminate
-#include "wildfire_values.h" // all of the MACRO values
+#include "wildfire_values.h" // all of the shared values
 
 ///
 /// Function: printUsageMsg
@@ -57,7 +57,7 @@ static void argumentError(char *cmdUsed, char *name, int value, char *constraint
 /// @param size  The size of each row in the ``board''.
 /// @param board  The life board.
 ///
-void initializeSimBoard(int density, 
+static void initializeSimBoard(int density, 
                         int proportionBurning, 
                         int size, 
                         char simBoard[][size])
@@ -105,38 +105,6 @@ void initializeSimBoard(int density,
             simBoard[row][col] = IGNITE_VALUE;   
             --totalBurningTrees;
         }
-    }
-}
-
-
-///
-/// Function: getPrintCharacter
-///
-/// Description: Returns the character which should be printed.
-///
-/// @param status  The current status of the cell on the board.
-///
-/// @return The character which should be printed.
-///
-char getPrintCharacter(int status)
-{
-    // 0 is space
-    // 1 is alive tree
-    // 12 is burnt tree
-    // everything else is burning
-    switch(status)
-    {
-        case 0:
-            return EMPTY;
-            break;
-        case 1:
-            return ALIVE;
-            break;
-        case 12:
-            return BURNT;
-            break;
-        default:
-            return BURNING;
     }
 }
 
@@ -217,7 +185,6 @@ int main(int argc, char **argv)
     proportionBurning = strtol(argv[4 + offset], NULL, 10);
 
     // goes through and checks each command line argument for correct formatting
-    // maybe make this a function
     if(numberOfIterations < 0 && offset == 1)
     {
         argumentError(argv[0], "number of iterations", numberOfIterations, 
