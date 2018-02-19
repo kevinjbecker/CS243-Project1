@@ -14,18 +14,8 @@
 #include <stdio.h> // fprintf
 #include <stdlib.h> // EXIT_SUCCESS
 #include <time.h> //time
-#include "display.h" // clear, set_cursor_pos, put
 #include "run_wildfire.h" // runIterataions, runIndeterminate
-
-// some custom MACROs
-#define ALIVE 'Y'
-#define BURNING '*'
-#define BURNT '_'
-#define EMPTY ' '
-// the potential starting values
-#define EMPTY_VALUE 0
-#define ALIVE_VALUE 1
-#define IGNITE_VALUE 2
+#include "wildfire_values.h" // all of the MACRO values
 
 ///
 /// Function: printUsageMsg
