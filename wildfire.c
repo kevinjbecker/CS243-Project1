@@ -77,8 +77,10 @@ void initializeSimBoard(int density,
         for(col = 0; col < size; ++col)
             simBoard[row][col] = 0;
 
-    // determines our total number of trees
+    // determines the total number of trees
     int totalTrees = (size * size) * (density/100.0);
+    // determines the number of burning trees
+    int totalBurningTrees = totalTrees * (proportionBurning / 100.0);
 
     // dispurses our trees
     while(totalTrees > 0)
@@ -94,8 +96,6 @@ void initializeSimBoard(int density,
             --totalTrees;
         }
     }
-
-    int totalBurningTrees = totalTrees * (proportionBurning / 100.0);
     
     // lights some trees on fire
     while(totalBurningTrees > 0)
