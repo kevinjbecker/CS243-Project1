@@ -11,7 +11,7 @@
 ///
 // // // // // // // // // // // // // // // // // // // // // // // // // // //
 
-#include <stdio.h> // (f)printf
+#include <stdio.h> // fprintf
 #include <stdlib.h> // EXIT_SUCCESS
 #include <time.h> //time
 #include "display.h" // clear, set_cursor_pos, put
@@ -21,6 +21,10 @@
 #define BURNING '*'
 #define BURNT '_'
 #define EMPTY ' '
+// the potential starting values
+#define EMPTY_VALUE 0
+#define ALIVE_VALUE 1
+#define IGNITE_VALUE 2
 
 ///
 /// Function: printUsageMsg
@@ -75,7 +79,7 @@ void initializeSimBoard(int density,
     // fills our board with 0s
     for(row = 0; row < size; ++row)
         for(col = 0; col < size; ++col)
-            simBoard[row][col] = 0;
+            simBoard[row][col] = EMPTY_VALUE;
 
     // determines the total number of trees
     int totalTrees = (size * size) * (density/100.0);
@@ -92,7 +96,7 @@ void initializeSimBoard(int density,
         // if our space is already filled with something
         if(simBoard[row][col] == 0)
         {
-            simBoard[row][col] = 1;
+            simBoard[row][col] = ALIVE_VALUE;
             --totalTrees;
         }
     }
@@ -107,7 +111,7 @@ void initializeSimBoard(int density,
         // if our space is already filled with something
         if(simBoard[row][col] == 1)
         {
-            simBoard[row][col] = 2;   
+            simBoard[row][col] = IGNITE_VALUE;   
             --totalBurningTrees;
         }
     }
@@ -260,13 +264,19 @@ int main(int argc, char **argv)
     
     
     // we're all set up we can begin simulating
+    // if we have a set number of iterations: run that procedure
+    if(numberOfIterations != -1)
+    {
+        // run numberOfIterations times
+    }
+    // else we run the inifinite, cursor controlled system
+    else
+    {
+        // run for fucking ever pls also cursor control
+    }
     
     // prints our board (for my sanity)
     printBoard(size, simBoard);
-    
 
-
-    // clears the terminal window so we may begin
-    //clear();
     return EXIT_SUCCESS;
 }
