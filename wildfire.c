@@ -65,28 +65,50 @@ static void argumentError(char *cmdUsed, char *name, int value, char *constraint
 void initializeSimBoard(int density, 
                         int proportionBurning, 
                         int size, 
-                        char board[][size])
+                        char simBoard[][size])
 {
-    // row, and column variables
+    // row, column, and index variables
     int row, col;
-    
     // sets our random number generator to current time
     srand(time(NULL));
-    
-    // fills our board
+
+    // fills our board with 0s
     for(row = 0; row < size; ++row)
-    {
         for(col = 0; col < size; ++col)
+            simBoard[row][col] = 0;
+
+    // determines our total number of trees
+    int totalTrees = (size * size) * (density/100.0);
+
+    // dispurses our trees
+    while(totalTrees > 0)
+    {
+        // determines a random location
+        row = rand() % size;
+        col = rand() % size;
+        
+        // if our space is already filled with something
+        if(simBoard[row][col] == 0)
         {
-            // if our density requirement is met, it's a tree
-            if(rand()%100 < density)
-            {
-                // determines if our tree should be on fire, or alive
-                board[row][col] = (rand()%100 < proportionBurning) ? 2 : 1;
-            }
-            else
-                // empty space
-                board[row][col] = 0;
+            simBoard[row][col] = 1;
+            --totalTrees;
+        }
+    }
+
+    int totalBurningTrees = totalTrees * (proportionBurning / 100.0);
+    
+    // lights some trees on fire
+    while(totalBurningTrees > 0)
+    {
+        // determines a random location
+        row = rand() % size;
+        col = rand() % size;
+        
+        // if our space is already filled with something
+        if(simBoard[row][col] == 1)
+        {
+            simBoard[row][col] = 2;   
+            --totalBurningTrees;
         }
     }
 }
