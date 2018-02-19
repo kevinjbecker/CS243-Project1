@@ -15,6 +15,7 @@
 #include <stdlib.h> // EXIT_SUCCESS
 #include <time.h> //time
 #include "display.h" // clear, set_cursor_pos, put
+#include "run_wildfire.h" // runIterataions, runIndeterminate
 
 // some custom MACROs
 #define ALIVE 'Y'
@@ -82,7 +83,7 @@ void initializeSimBoard(int density,
             simBoard[row][col] = EMPTY_VALUE;
 
     // determines the total number of trees
-    int totalTrees = (size * size) * (density/100.0);
+    int totalTrees = (size * size) * (density / 100.0);
     // determines the number of burning trees
     int totalBurningTrees = totalTrees * (proportionBurning / 100.0);
 
@@ -254,8 +255,6 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
     
-    // we have made it here, so we can begin construction of the board
-    
     // BOARD GENERATION SEQUENCE ===============================================
     // creates our simulation board
     char simBoard[size][size];
@@ -267,12 +266,12 @@ int main(int argc, char **argv)
     // if we have a set number of iterations: run that procedure
     if(numberOfIterations != -1)
     {
-        // run numberOfIterations times
+        runIterations(numberOfIterations, size, simBoard);
     }
     // else we run the inifinite, cursor controlled system
     else
     {
-        // run for fucking ever pls also cursor control
+        runIndeterminate(size, simBoard);
     }
     
     // prints our board (for my sanity)
