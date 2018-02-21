@@ -11,11 +11,16 @@
 ///
 // // // // // // // // // // // // // // // // // // // // // // // // // // //
 
+#define _BSD_SOURCE
+#include <unistd.h> // getopt
 #include <stdio.h> // fprintf
 #include <stdlib.h> // EXIT_SUCCESS
 #include <time.h> //time
 #include "run_wildfire.h" // runIterataions, runIndeterminate
 #include "wildfire_values.h" // all of the shared values
+
+// the shared ints we will need to run
+extern int size, treeDensity, proportionBurning, probability, numberOfIterations;
 
 ///
 /// Function: printUsageMsg
@@ -28,6 +33,8 @@ static void printUsageMsg(char *cmdUsed)
     fprintf(stderr, "Usage: %s [-pN] size probability treeDensity proportionBurning\
     \nThe -pN option tells the simulation to print N cycles and stop.\
     \nThe probability is the probability a tree will catch fire.\n", cmdUsed);
+    // exits our program
+    exit(EXIT_FAILURE);
 }
 
 
@@ -57,10 +64,7 @@ static void argumentError(char *cmdUsed, char *name, int value, char *constraint
 /// @param size  The size of each row in the ``board''.
 /// @param board  The life board.
 ///
-static void initializeSimBoard(int density, 
-                        int proportionBurning, 
-                        int size, 
-                        char simBoard[][size])
+static void initializeSimBoard(char simBoard[][size])
 {
     // row, column, and index variables
     int row, col;
@@ -73,7 +77,7 @@ static void initializeSimBoard(int density,
             simBoard[row][col] = EMPTY_VALUE;
 
     // determines the total number of trees
-    int totalTrees = (size * size) * (density / 100.0);
+    int totalTrees = (size * size) * (treeDensity / 100.0);
     // determines the number of burning trees
     int totalBurningTrees = totalTrees * (proportionBurning / 100.0);
 
@@ -84,7 +88,8 @@ static void initializeSimBoard(int density,
         row = rand() % size;
         col = rand() % size;
         
-        // if our space is already filled with something
+        // if our space is already filled with something and subtract from 
+        // the total trees remaining
         if(simBoard[row][col] == 0)
         {
             simBoard[row][col] = ALIVE_VALUE;
@@ -109,27 +114,6 @@ static void initializeSimBoard(int density,
 }
 
 
-///
-/// Function: printBoard
-///
-/// Description: Prints a 2d represented board of our forest.
-///
-/// @param size  The square size of the board
-/// @param simboard  The simBoard.
-///
-static void printBoard(int size, char simBoard[][size])
-{
-    for(int row = 0; row < size; ++row)
-    {
-        // print our characters
-        for(int col = 0; col < size; ++col)
-            printf("%c", getPrintCharacter(simBoard[row][col]));
-        // prints our new line
-        puts(" ");
-    }
-}
-
-
 /// 
 /// Function: main
 ///
@@ -145,94 +129,57 @@ int main(int argc, char **argv)
     // checks to make sure we have the right number of command line arguments 
     // (we need to abort otherwise)
     if(argc < 5 || argc > 6)
-    {
         // prints our usage
         printUsageMsg(argv[0]);
-        // exits
-        return EXIT_FAILURE;
-    }
     
-
-    // the size of our board
-    int size, treeDensity, proportionBurning, probability;
-    // we might not need this... hmm
     // we set it to -1 (changed if we do not want to go forever)
-    int numberOfIterations = -1;
+    numberOfIterations = -1;
 
-    // offset is used for later on if we need an offset
-    int offset = 0;
-
-    // parses our command line inputs to get ready
-    // if we get argc of 6, -pN was included
-    if(argc == 6)
+    int opt;
+    while((opt = getopt(argc, argv, "p:")) != -1)
     {
-		// checking for -p, if it's not we had a bad argument
-		if (argv[1][0] != '-' || argv[1][1] != 'p')
-		{
-			printUsageMsg(argv[0]);
-			return EXIT_FAILURE;
-		}
-        // start +2 to get past "-p" part
-        numberOfIterations = strtol(argv[1]+2, NULL, 10);
-        // set our offset (we need to boost everything up by one)
-        offset = 1;
+        switch(opt)
+        {
+            case 'p':
+                numberOfIterations = strtol(optarg, NULL, 10);
+                break;
+            default:
+                fprintf(stderr, "Unknown flag: `%c'\n", optopt);
+        }
     }
 
     // reads in our size, prob, density and proportion values to variables
-    size = strtol(argv[1 + offset], NULL, 10);
-    probability = strtol(argv[2 + offset], NULL, 10);
-    treeDensity = strtol(argv[3 + offset], NULL, 10);
-    proportionBurning = strtol(argv[4 + offset], NULL, 10);
+    size = strtol(argv[optind], NULL, 10);
+    probability = strtol(argv[optind+1], NULL, 10);
+    treeDensity = strtol(argv[optind+2], NULL, 10);
+    proportionBurning = strtol(argv[optind+3], NULL, 10);
 
     // goes through and checks each command line argument for correct formatting
-    if(numberOfIterations < 0 && offset == 1)
-    {
-        argumentError(argv[0], "number of iterations", numberOfIterations, 
-            "greater than 0");
-        return EXIT_FAILURE;
-    }
+    if(numberOfIterations < 0 && argc == 6)
+        argumentError(argv[0], "number of iterations", numberOfIterations, "greater than 0");
     if(size < 5|| size > 40)
-    {
         argumentError(argv[0], "size", size, "within [5-40]");
-        return EXIT_FAILURE;
-    }
     if (probability < 0 || probability > 100)
-    {
         argumentError(argv[0], "probability", probability, "within [0-100]");
-        return EXIT_FAILURE;
-    }
     if (treeDensity < 0 || treeDensity > 100)
-    {
         argumentError(argv[0], "tree density", treeDensity, "within [0-100]");
-        return EXIT_FAILURE;
-    }
     if (proportionBurning < 0 || proportionBurning > 100)
-    {
         argumentError(argv[0], "proportion", proportionBurning, "within [0-100]");
-        return EXIT_FAILURE;
-    }
     
     // BOARD GENERATION SEQUENCE ===============================================
     // creates our simulation board
     char simBoard[size][size];
     // generates a new board--all trees, one burning in the middle
-    initializeSimBoard(treeDensity, proportionBurning, size, simBoard);
+    initializeSimBoard(simBoard);
     
     
     // we're all set up we can begin simulating
     // if we have a set number of iterations: run that procedure
     if(numberOfIterations != -1)
-    {
         runIterations(numberOfIterations, size, simBoard);
-    }
-    // else we run the inifinite, cursor controlled system
+    // else we run the indeterminate, cursor controlled system
     else
-    {
-        runIndeterminate(size, simBoard);
-    }
-    
-    // prints our board (for my sanity)
-    printBoard(size, simBoard);
+        runIndeterminate(probability, size, simBoard);
 
     return EXIT_SUCCESS;
 }

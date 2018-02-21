@@ -3,6 +3,6 @@
 
 void runIterations(int numberOfIterations, int size, char simBoard[][size]);
 
-void runIndeterminate(int size, char simBoard[][size]);
+void runIndeterminate(int probability, int size, char simBoard[][size]);
 
 #endif
