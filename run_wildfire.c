@@ -114,11 +114,11 @@ static void runIterations(const char *statusFormatString, int size, char simBoar
         for(int row = 0; row < size; ++row)
         {
             for(int col = 0; col < size; ++col)
-                printf("%c ", getPrintChar(simBoard[row][col]));
+                printf("%c", getPrintChar(simBoard[row][col]));
             puts(" ");
         }
         
-        // prints our status format string
+        // prints our status
         printf(statusFormatString, cycle, numberOfChanges);
         
         // updates and adds the number of changes
@@ -129,20 +129,39 @@ static void runIterations(const char *statusFormatString, int size, char simBoar
 
 static void runIndeterminate(const char *statusFormatString, int size, char simBoard[][size])
 {
-    // clears the screen before we do anything else
+    // clears the screen and set cursor to top left before we do anything else
     clear();
+    set_cur_pos(1,0);
+    
     // sets our two variables we need to keep track of
     int numberOfChanges = 0, cycle = 0;
-    while(numberOfBurningTrees(size, simBoard) > 0)
+    
+    // keeps going until our trees are out, or user hits CTRL-C
+    while(numberOfBurningTrees(size, simBoard) != 1000)
     {
-        ++cycle;
-        numberOfChanges += update(size, simBoard);
+        // updates our board
+        for(int row = 0; row < size; ++row)
+        {
+            // prints each char in the column
+            for(int col = 0; col < size; ++col)
+                put(getPrintChar(simBoard[row][col]));
+            set_cur_pos(row+2, 0);
+        }
+        
+        // prints our status
         printf(statusFormatString, cycle, numberOfChanges);
+        
         // sleep for 250 ms
-        usleep(250000);
+        usleep(1000000);
+        
+        // updates our board
+        numberOfChanges += update(size, simBoard);
+        
+        // lastly we need to add to our cycle number
+        ++cycle;
     }
     // once we exit the loop, we can print that we have completed
-    printf("fires are out after %d cumulative changes", numberOfChanges);
+    printf("fires are out after %d cumulative changes\n", numberOfChanges);
 }
 
 
