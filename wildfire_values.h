@@ -9,6 +9,6 @@
 #define EMPTY_VALUE 0
 #define ALIVE_VALUE 1
 #define IGNITE_VALUE 2
-#define EXTINGUISH_VALUE 12
+#define BURNT_VALUE -1
 
 #endif

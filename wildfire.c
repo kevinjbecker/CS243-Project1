@@ -14,13 +14,14 @@
 #define _BSD_SOURCE
 #include <unistd.h> // getopt
 #include <stdio.h> // fprintf
-#include <stdlib.h> // EXIT_SUCCESS
+#include <stdlib.h> // rand(), EXIT_SUCCESS
 #include <time.h> //time
 #include "run_wildfire.h" // runIterataions, runIndeterminate
 #include "wildfire_values.h" // all of the shared values
 
 // the shared ints we will need to run
-extern int probability, numberOfIterations = -1;
+extern int probability;
+int numberOfIterations = -1;
 
 // some things we need to use globally in just this file
 static int treeDensity, proportionBurning;
