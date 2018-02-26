@@ -112,7 +112,7 @@ static void initializeSimBoard(int size, char simBoard[][size])
         // if our space is already filled with something
         if(simBoard[row][col] == 1)
         {
-            simBoard[row][col] = IGNITE_VALUE;   
+            simBoard[row][col] = BURNING_VALUE;   
             --totalBurningTrees;
         }
     }

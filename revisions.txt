@@ -1,0 +1,76 @@
+commit e332d44275a651a4aad6141701550fc8faa32044
+Author: Kevin Joseph Becker <kjb2503@cs.rit.edu>
+Date:   Sat Feb 24 19:40:46 2018 -0500
+
+    Modified a few constant values, finished the running part, now all
+    that is left is to determine if a tree should light on fire or not
+
+commit 577d78671e46cdefe5c832a7745fa38e75a7e0ee
+Author: Kevin Joseph Becker <kjb2503@cs.rit.edu>
+Date:   Sat Feb 24 18:51:27 2018 -0500
+
+    Added the run_(type) functions to run_wildfire.c.  Now it is time
+    for the update function logic.
+
+commit 046ff82c036a2b0982bd6daaab09822a35722625
+Author: Kevin Joseph Becker <kjb2503@cs.rit.edu>
+Date:   Sat Feb 24 18:47:00 2018 -0500
+
+    Finished the setting up of the board, now beginning the logic of
+    the game itself.
+
+commit 267c614bcefb3451df7749bbf0a5845256b6a174
+Author: Kevin Joseph Becker <kjb2503@cs.rit.edu>
+Date:   Wed Feb 21 11:41:44 2018 -0500
+
+    Made some changes to the wildfire program. Uses getops instead
+    of a primitive version of it. Uses a run_wildfire.(c/h) to run
+    through the logic of the program.
+
+commit 37fc4fbbfa8888462f4138b9c745d1bc60dafa9a
+Author: Kevin Joseph Becker <kjb2503@cs.rit.edu>
+Date:   Mon Feb 19 10:51:47 2018 -0500
+
+    Some changes have been made to the general form of the program,
+    some files have been refactored to make more sense. ``static''
+    given to some functions to keep them file-private.
+
+commit fec366128575d739a76ff924fbf9227a272d204f
+Author: Kevin Joseph Becker <kjb2503@cs.rit.edu>
+Date:   Sun Feb 18 21:18:29 2018 -0500
+
+    Created wildfire_values which is used to hold our constant values
+    shared between files.
+
+commit f2327d653718b77018cdca22b486f2a327f1bbb9
+Author: Kevin Joseph Becker <kjb2503@cs.rit.edu>
+Date:   Sun Feb 18 21:07:19 2018 -0500
+
+    Made some changes to wildfire, added a runner to separate the
+    running functions from the other stuff.
+
+commit 65a3c0d8282d83bb13b414cc619e5b80976c2922
+Author: Kevin Joseph Becker <kjb2503@cs.rit.edu>
+Date:   Sun Feb 18 20:45:42 2018 -0500
+
+    Began the process of building in burning procedures.
+
+commit 9cd484573cc7d1ad21ee8e9be038179ac16534c2
+Author: Kevin Joseph Becker <kjb2503@cs.rit.edu>
+Date:   Sun Feb 18 20:25:19 2018 -0500
+
+    Made a slight error and had to move things around a bit. Board
+    NOW generates correct.
+
+commit 78043d7e7186511b52434f44eea1439909b69593
+Author: Kevin Joseph Becker <kjb2503@cs.rit.edu>
+Date:   Sun Feb 18 20:22:53 2018 -0500
+
+    Started the initial creation. Board now created to correct
+    initial status.
+
+commit bc7062201fa6ae7bd9372245058eab0cde19ae1c
+Author: Kevin Joseph Becker <kjb2503@cs.rit.edu>
+Date:   Sun Feb 18 20:17:33 2018 -0500
+
+    Initial commit.

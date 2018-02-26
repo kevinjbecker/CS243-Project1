@@ -16,6 +16,8 @@
 #include "display.h" // cursor-controlled output functions
 #include "wildfire_values.h" // some default constants
 
+// NEIGHBOR_DNE is used in shouldChange
+#define NEIGHBOR_DNE -1
 
 // pulls in our information from the other file
 int probability, numberOfIterations;
@@ -55,10 +57,73 @@ static char getPrintChar(int value)
 
 static int shouldChange(int row, int col, int size, char simBoard[][size])
 {
+    int totalNeighbors = 0;
+    float totalBurning = 0.0;
+    
     // returns ``true'' if the tree is already burning
     // (this only affects non-burning trees)
     if(simBoard[row][col] == BURNING_VALUE)
         return 1;
+    
+    // if we get here we are alive, and need to check neighbors
+    // can't have NE neighbor if at row 0 OR col 0
+    // we pull in all of our spaces before we do anything else, determine what
+    // to do after we get this information
+    int NW = (row > 0 && col > 0) ? simBoard[row-1][col-1] : NEIGHBOR_DNE;
+    int N = (row > 0) ? simBoard[row-1][col] : NEIGHBOR_DNE;
+    int NE = (row > 0 && col < size-1) ? simBoard[row-1][col+1] : NEIGHBOR_DNE;
+    int E = (col < size-1) ? simBoard[row][col+1] : NEIGHBOR_DNE;
+    int SE = (row < size-1 && col < size-1) ? simBoard[row+1][col+1] : NEIGHBOR_DNE;
+    int S = (row < size-1) ? simBoard[row+1][col] : NEIGHBOR_DNE;
+    int SW = (row < size-1 && col > 0) ? simBoard[row+1][col-1] : NEIGHBOR_DNE;
+    int W = (col > 0) ? simBoard[row][col-1] : NEIGHBOR_DNE;
+    
+    // performs a check on each possible neighbor adding to items as needed
+    if(NW != NEIGHBOR_DNE)
+    {
+        // adds to total neighbors if cell contains a tree (in any form)
+        totalNeighbors += (NW == ALIVE_VALUE || NW == BURNING_VALUE) ? 1 : 0;
+        // adds to total burning if cell contains a burning tree
+        totalBurning += (NW == BURNING_VALUE) ? 1 : 0;
+    }
+    if(N != NEIGHBOR_DNE)
+    {
+        totalNeighbors += (N == ALIVE_VALUE || N == BURNING_VALUE) ? 1 : 0;
+        totalBurning += (N == BURNING_VALUE) ? 1 : 0;
+    }
+    if(NE != NEIGHBOR_DNE)
+    {
+        totalNeighbors += (NE == ALIVE_VALUE || NE == BURNING_VALUE) ? 1 : 0;
+        totalBurning += (NE == BURNING_VALUE) ? 1 : 0;
+    }
+    if(E != NEIGHBOR_DNE)
+    {
+        totalNeighbors += (E == ALIVE_VALUE || E == BURNING_VALUE) ? 1 : 0;
+        totalBurning += (E == BURNING_VALUE) ? 1 : 0;
+    }
+    if(SE != NEIGHBOR_DNE)
+    {
+        totalNeighbors += (SE == ALIVE_VALUE || SE == BURNING_VALUE) ? 1 : 0;
+        totalBurning += (SE == BURNING_VALUE) ? 1 : 0;
+    }
+    if(S != NEIGHBOR_DNE)
+    {
+        totalNeighbors += (S == ALIVE_VALUE || S == BURNING_VALUE) ? 1 : 0;
+        totalBurning += (S == BURNING_VALUE) ? 1 : 0;
+    }
+    if(SW != NEIGHBOR_DNE)
+    {
+        totalNeighbors += (SW == ALIVE_VALUE || SW == BURNING_VALUE) ? 1 : 0;
+        totalBurning += (SW == BURNING_VALUE) ? 1 : 0;
+    }
+    if(W != NEIGHBOR_DNE)
+    {
+        totalNeighbors += (W == ALIVE_VALUE || W == BURNING_VALUE) ? 1 : 0;
+        totalBurning += (W == BURNING_VALUE) ? 1 : 0;
+    }
+    
+    // if we have more than 25% neighbors on fire, we return 1, otherwise 0
+    return ((totalBurning / totalNeighbors) > 0.25) ? 1 : 0;
 }
 
 
@@ -86,12 +151,12 @@ static int update(int size, char simBoard[][size])
                     break;
                 // if we are alive or burning, we need to do some logic
                 default:
-                    if(canChange(row, col, size, simBoard)
+                    if(shouldChange(row, col, size, simBoard)
                         && (rand()%100) < probability)
                     {
                         // set the tree on fire/extinguish if prob good
                         nextCycle[row][col] = (simBoard[row][col] == ALIVE_VALUE) ? 
-                                                IGNITE_VALUE : BURNT_VALUE;
+                                                BURNING_VALUE : BURNT_VALUE;
                         // record the change
                         ++numberOfChanges;
                     }
@@ -142,7 +207,7 @@ static int numberOfBurningTrees(int size, char simBoard[][size])
         for(int col = 0; col < size; ++col)
         {
             // if our fire is still alive, add one to the burning variable
-            if(simBoard[row][col] == IGNITE_VALUE)
+            if(simBoard[row][col] == BURNING_VALUE)
                 ++burningTrees;
         }
     }
@@ -151,7 +216,7 @@ static int numberOfBurningTrees(int size, char simBoard[][size])
     return burningTrees;
 }
 
-static void printBoard(const char *statusFormatString, int cycle,
+static void updateBoard(const char *statusFormatString, int cycle,
                        int numberOfChanges, int size, char simBoard[][size])
 {
     for(int row = 0; row < size; ++row)
@@ -163,7 +228,8 @@ static void printBoard(const char *statusFormatString, int cycle,
             put(getPrintChar(simBoard[row][col]));
     }
     
-    set_cur_pos(size, 0);
+    // sets our current position to size+1 (after last row)
+    set_cur_pos(size+1, 0);
     
     // prints our status
     printf(statusFormatString, cycle, numberOfChanges);
@@ -179,12 +245,24 @@ static void runIndeterminate(const char *statusFormatString, int size, char simB
     int numberOfChanges = 0, cycle = 0;
     
     // keeps going until our trees are out, or user hits CTRL-C
-    while(numberOfBurningTrees(size, simBoard) != 0)
+    // if loop exits, numberOfBurningTrees returns 0;
+    while(numberOfBurningTrees(size, simBoard))
     {
-        printBoard(statusFormatString, cycle, numberOfChanges, size, simBoard);
+        updateBoard(statusFormatString, cycle, numberOfChanges, size, simBoard);
         
-        // sleep for 250 ms
-        usleep(750000);
+        set_cur_pos(size+2, 0);
+        printf("4\n");
+        // sleep for 4s
+        usleep(1000000);
+        set_cur_pos(size+2, 0);
+        printf("3\n");
+        usleep(1000000);
+        set_cur_pos(size+2, 0);
+        printf("2\n");
+        usleep(1000000);
+        set_cur_pos(size+2, 0);
+        printf("1\n");
+        usleep(1000000);
         
         // updates our board
         numberOfChanges += update(size, simBoard);
@@ -194,7 +272,7 @@ static void runIndeterminate(const char *statusFormatString, int size, char simB
     }
     
     // prints our board one last time
-    printBoard(statusFormatString, cycle, numberOfChanges, size, simBoard);
+    updateBoard(statusFormatString, cycle, numberOfChanges, size, simBoard);
     // once we exit the loop, we can print that we have completed
     printf("fires are out after %d cumulative changes\n", numberOfChanges);
 }

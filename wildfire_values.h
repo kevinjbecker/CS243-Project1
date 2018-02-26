@@ -8,7 +8,7 @@
 // the potential starting values
 #define EMPTY_VALUE 0
 #define ALIVE_VALUE 1
-#define IGNITE_VALUE 2
-#define BURNT_VALUE -1
+#define BURNING_VALUE 2
+#define BURNT_VALUE 3
 
 #endif
