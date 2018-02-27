@@ -1,3 +1,10 @@
+commit 8daf294cd55ce5ca8f78e6f8fb02dd5002d7198b
+Author: Kevin Joseph Becker <kjb2503@cs.rit.edu>
+Date:   Tue Feb 27 13:16:12 2018 -0500
+
+    Forgot to remove extra debugging sleeps, they are removed and all
+    works as expected
+
 commit a3e20f381cf5bc534284fabb20f5629e2ada4c9a
 Author: Kevin Joseph Becker <kjb2503@cs.rit.edu>
 Date:   Tue Feb 27 13:10:40 2018 -0500

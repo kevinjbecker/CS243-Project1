@@ -31,7 +31,7 @@ static int treeDensity, proportionBurning, probability;
 static void printUsageMsg(const char *cmdUsed)
 {
     // prints our usage to stderr
-    fprintf(stderr, "Usage: %s [-pN] size probability treeDensity proportionBurning\
+    fprintf(stderr, "usage: %s [-pN] size probability treeDensity proportionBurning\
     \nThe -pN option tells the simulation to print N cycles and stop.\
     \nThe probability is the probability a tree will catch fire.\n", cmdUsed);
     // exits our program with status of EXIT_FAILURE
@@ -55,7 +55,7 @@ static void requiredArgumentError(const char *cmdUsed, const char *name,
                           int value, int low, int high)
 {
     // prints our error
-    fprintf(stderr, "The %s (%d) must be an integer within [%d-%d].\n",
+    fprintf(stderr, "The %s (%d) must be an integer within [%d...%d].\n",
         name, value, low, high);
     // prints our usage message and exits the program
     printUsageMsg(cmdUsed);
@@ -74,7 +74,7 @@ static void requiredArgumentError(const char *cmdUsed, const char *name,
 static void printFlagError(const char *cmdUsed, const char *whichErr)
 {
     // prints our error
-    fprintf(stderr, "The -pN argument was %s", whichErr);
+    fprintf(stderr, "The -pN argument was %s.", whichErr);
     // prints our usage message and exits the program
     printUsageMsg(cmdUsed);
 }
