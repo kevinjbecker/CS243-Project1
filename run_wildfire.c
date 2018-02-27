@@ -69,57 +69,57 @@ static int shouldChange(int row, int col, int size, char simBoard[][size])
     // can't have NE neighbor if at row 0 OR col 0
     // we pull in all of our spaces before we do anything else, determine what
     // to do after we get this information
-    int NW = (row>0 && col>0) ? simBoard[row-1][col-1] : NEIGHBOR_DNE;
-    int N = (row>0) ? simBoard[row-1][col] : NEIGHBOR_DNE;
-    int NE = (row>0 && col<size-1) ? simBoard[row-1][col+1] : NEIGHBOR_DNE;
-    int E = (col<size-1) ? simBoard[row][col+1] : NEIGHBOR_DNE;
-    int SE = (row<size-1 && col<size-1) ? simBoard[row+1][col+1] : NEIGHBOR_DNE;
-    int S = (row<size-1) ? simBoard[row+1][col] : NEIGHBOR_DNE;
-    int SW = (row<size-1 && col>0) ? simBoard[row+1][col-1] : NEIGHBOR_DNE;
-    int W = (col>0) ? simBoard[row][col-1] : NEIGHBOR_DNE;
+    int nw = (row>0 && col>0) ? simBoard[row-1][col-1] : NEIGHBOR_DNE;
+    int n = (row>0) ? simBoard[row-1][col] : NEIGHBOR_DNE;
+    int ne = (row>0 && col<size-1) ? simBoard[row-1][col+1] : NEIGHBOR_DNE;
+    int e = (col<size-1) ? simBoard[row][col+1] : NEIGHBOR_DNE;
+    int se = (row<size-1 && col<size-1) ? simBoard[row+1][col+1] : NEIGHBOR_DNE;
+    int s = (row<size-1) ? simBoard[row+1][col] : NEIGHBOR_DNE;
+    int sw = (row<size-1 && col>0) ? simBoard[row+1][col-1] : NEIGHBOR_DNE;
+    int w = (col>0) ? simBoard[row][col-1] : NEIGHBOR_DNE;
 
     // performs a check on each possible neighbor adding to rel. items as needed
-    if(NW != NEIGHBOR_DNE)
+    if(nw != NEIGHBOR_DNE)
     {
         // adds to total neighbors if cell contains a tree (in any form)
-        totalNeighbors += (NW == ALIVE_VALUE || NW == BURNING_VALUE) ? 1 : 0;
+        totalNeighbors += (nw == ALIVE_VALUE || nw == BURNING_VALUE) ? 1 : 0;
         // adds to total burning if cell contains a burning tree
-        totalBurning += (NW == BURNING_VALUE) ? 1 : 0;
+        totalBurning += (nw == BURNING_VALUE) ? 1 : 0;
     }
-    if(N != NEIGHBOR_DNE)
+    if(n != NEIGHBOR_DNE)
     {
-        totalNeighbors += (N == ALIVE_VALUE || N == BURNING_VALUE) ? 1 : 0;
-        totalBurning += (N == BURNING_VALUE) ? 1 : 0;
+        totalNeighbors += (n == ALIVE_VALUE || n == BURNING_VALUE) ? 1 : 0;
+        totalBurning += (n == BURNING_VALUE) ? 1 : 0;
     }
-    if(NE != NEIGHBOR_DNE)
+    if(ne != NEIGHBOR_DNE)
     {
-        totalNeighbors += (NE == ALIVE_VALUE || NE == BURNING_VALUE) ? 1 : 0;
-        totalBurning += (NE == BURNING_VALUE) ? 1 : 0;
+        totalNeighbors += (ne == ALIVE_VALUE || ne == BURNING_VALUE) ? 1 : 0;
+        totalBurning += (ne == BURNING_VALUE) ? 1 : 0;
     }
-    if(E != NEIGHBOR_DNE)
+    if(e != NEIGHBOR_DNE)
     {
-        totalNeighbors += (E == ALIVE_VALUE || E == BURNING_VALUE) ? 1 : 0;
-        totalBurning += (E == BURNING_VALUE) ? 1 : 0;
+        totalNeighbors += (e == ALIVE_VALUE || e == BURNING_VALUE) ? 1 : 0;
+        totalBurning += (e == BURNING_VALUE) ? 1 : 0;
     }
-    if(SE != NEIGHBOR_DNE)
+    if(se != NEIGHBOR_DNE)
     {
-        totalNeighbors += (SE == ALIVE_VALUE || SE == BURNING_VALUE) ? 1 : 0;
-        totalBurning += (SE == BURNING_VALUE) ? 1 : 0;
+        totalNeighbors += (se == ALIVE_VALUE || se == BURNING_VALUE) ? 1 : 0;
+        totalBurning += (se == BURNING_VALUE) ? 1 : 0;
     }
-    if(S != NEIGHBOR_DNE)
+    if(s != NEIGHBOR_DNE)
     {
-        totalNeighbors += (S == ALIVE_VALUE || S == BURNING_VALUE) ? 1 : 0;
-        totalBurning += (S == BURNING_VALUE) ? 1 : 0;
+        totalNeighbors += (s == ALIVE_VALUE || s == BURNING_VALUE) ? 1 : 0;
+        totalBurning += (s == BURNING_VALUE) ? 1 : 0;
     }
-    if(SW != NEIGHBOR_DNE)
+    if(sw != NEIGHBOR_DNE)
     {
-        totalNeighbors += (SW == ALIVE_VALUE || SW == BURNING_VALUE) ? 1 : 0;
-        totalBurning += (SW == BURNING_VALUE) ? 1 : 0;
+        totalNeighbors += (sw == ALIVE_VALUE || sw == BURNING_VALUE) ? 1 : 0;
+        totalBurning += (sw == BURNING_VALUE) ? 1 : 0;
     }
-    if(W != NEIGHBOR_DNE)
+    if(w != NEIGHBOR_DNE)
     {
-        totalNeighbors += (W == ALIVE_VALUE || W == BURNING_VALUE) ? 1 : 0;
-        totalBurning += (W == BURNING_VALUE) ? 1 : 0;
+        totalNeighbors += (w == ALIVE_VALUE || w == BURNING_VALUE) ? 1 : 0;
+        totalBurning += (w == BURNING_VALUE) ? 1 : 0;
     }
 
     // if we have more than 25% neighbors on fire, we return 1, otherwise 0
@@ -334,12 +334,6 @@ static void runIndeterminate(int size, char simBoard[][size])
         printBoard(cycle, numberOfChanges, size, simBoard);
 
         // sleeps for 750ms
-        usleep(750000);
-        usleep(750000);
-        usleep(750000);
-        usleep(750000);
-        usleep(750000);
-        usleep(750000);
         usleep(750000);
 
         // updates our board adding the return value to numberOfChanges

@@ -1,3 +1,11 @@
+commit a3e20f381cf5bc534284fabb20f5629e2ada4c9a
+Author: Kevin Joseph Becker <kjb2503@cs.rit.edu>
+Date:   Tue Feb 27 13:10:40 2018 -0500
+
+    A small change was made so that in the event the number of changes
+    is different by a factor of 100, there won't be any unnecessary
+    data left behind
+
 commit a235013e844908d9c2281290794be2fcee87d52b
 Author: Kevin Joseph Becker <kjb2503@cs.rit.edu>
 Date:   Tue Feb 27 12:50:32 2018 -0500
