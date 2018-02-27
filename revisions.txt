@@ -1,3 +1,10 @@
+commit 941551b582e5ea8ae490991ed8649c7a8b2fd5f6
+Author: Kevin Joseph Becker <kjb2503@cs.rit.edu>
+Date:   Mon Feb 26 21:41:29 2018 -0500
+
+    Finalized the report and added just a few more comments to the
+    code to make it more understandable and better documented.
+
 commit 5fe00bdeae27af04ad81c76d07e8a9480bb4cb14
 Author: Kevin Joseph Becker <kjb2503@cs.rit.edu>
 Date:   Mon Feb 26 20:59:11 2018 -0500

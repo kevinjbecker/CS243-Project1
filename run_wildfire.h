@@ -21,7 +21,7 @@
 /// @param size  The size of the board.
 /// @param simBoard  The simulation board.
 ///
-void runWildfire(const char *statusFormatString, int numberOfIterations, 
+void runWildfire(const char *statusFormatString, int numberOfIterations,
                  int prob, int size, char simBoard[][size]);
 
 #endif

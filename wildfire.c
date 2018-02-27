@@ -51,11 +51,11 @@ static void printUsageMsg(const char *cmdUsed)
 /// @param low  The low which the argument must be greater than or equal to.
 /// @param high  The high which the argument must be greater than or equal to.
 ///
-static void requiredArgumentError(const char *cmdUsed, const char *name, 
+static void requiredArgumentError(const char *cmdUsed, const char *name,
                           int value, int low, int high)
 {
     // prints our error
-    fprintf(stderr, "The %s (%d) must be an integer within [%d-%d].\n", 
+    fprintf(stderr, "The %s (%d) must be an integer within [%d-%d].\n",
         name, value, low, high);
     // prints our usage message and exits the program
     printUsageMsg(cmdUsed);
@@ -83,7 +83,7 @@ static void printFlagError(const char *cmdUsed, const char *whichErr)
 ///
 /// Function: generateSimBoard
 ///
-/// Description: Generates a starting life board with the number of organisms 
+/// Description: Generates a starting life board with the number of organisms
 ///              requested by the user.
 ///
 /// @param numOrgs  The number of ``organisms'' to put in our board.
@@ -94,7 +94,7 @@ static void initializeSimBoard(int size, char simBoard[][size])
 {
     // row, column, and index variables
     int row, col;
-    
+
     // sets our random number generator to current time
     srand(time(NULL));
 
@@ -114,8 +114,8 @@ static void initializeSimBoard(int size, char simBoard[][size])
         // determines a random location
         row = rand() % size;
         col = rand() % size;
-        
-        // if our space is already filled with something and subtract from 
+
+        // if our space is already filled with something and subtract from
         // the total trees remaining
         if(simBoard[row][col] == 0)
         {
@@ -123,25 +123,25 @@ static void initializeSimBoard(int size, char simBoard[][size])
             --totalTrees;
         }
     }
-    
+
     // lights some trees on fire
     while(totalBurningTrees > 0)
     {
         // determines a random location
         row = rand() % size;
         col = rand() % size;
-        
+
         // if our space is already filled with something
         if(simBoard[row][col] == 1)
         {
-            simBoard[row][col] = BURNING_VALUE;   
+            simBoard[row][col] = BURNING_VALUE;
             --totalBurningTrees;
         }
     }
 }
 
 
-/// 
+///
 /// Function: main
 ///
 /// Description: The main driver for the wildfire program.
@@ -160,10 +160,10 @@ int main(int argc, char **argv)
     if(argc < 5 || argc > 7)
         // prints our usage
         printUsageMsg(argv[0]);
-    
+
     // we set it to -1 (changed if we do not want to go forever)
     int opt, size, numberOfIterations = -1;
-        
+
     while((opt = getopt(argc, argv, "p:")) != -1)
     {
         switch(opt)
@@ -179,27 +179,30 @@ int main(int argc, char **argv)
                 printUsageMsg(argv[0]);
         }
     }
-    
+
     // last minute effort, if we have more than 6 arguments and no changes made
     // to numberOfIterations, we have an issue and cannot move forward
     // NOTE: if we get here, the p flag was included but was invalid
     if(argc > 6 && numberOfIterations == -1)
         printFlagError(argv[0], "invalid");
-    
+
     // reads in our size, prob, density and proportion values to variables
     size = strtol(argv[optind], NULL, 10);
     probability = strtol(argv[optind+1], NULL, 10);
     treeDensity = strtol(argv[optind+2], NULL, 10);
     proportionBurning = strtol(argv[optind+3], NULL, 10);
-    
+
     // builds a format string
     // it's a little funky here, but our input parameters remain constant so
     // we don't need to continually keep putting them in.
     char statusFormatString[] = "cycle %s, size %d, probability %.2f, density "
                           "%.2f, proportion %.2f, changes %s\n";
     // formats our format string so that everything is print correctly
-    sprintf(statusFormatString, statusFormatString, "%d", size, (probability/100.0), 
-            (treeDensity/100.0), (proportionBurning/100.0),"%d");
+    // we are printing to our format string using our format string, the %s will be
+    // the two non-constant values changing between each iteration, one being a
+    // digit and the other being a 3 digit left-padded number
+    sprintf(statusFormatString, statusFormatString, "%d", size, (probability/100.0),
+            (treeDensity/100.0), (proportionBurning/100.0),"%-3d");
 
     // goes through and checks each command line argument for correct formatting
     if(size < 5|| size > 40)
@@ -210,18 +213,18 @@ int main(int argc, char **argv)
         requiredArgumentError(argv[0], "tree density", treeDensity, 0, 100);
     if (proportionBurning < 0 || proportionBurning > 100)
         requiredArgumentError(argv[0], "proportion", proportionBurning, 0, 100);
-    
+
     // BOARD GENERATION SEQUENCE ===============================================
-    
+
     // creates our uninitiailized simulation board
     char simBoard[size][size];
-    
+
     // generates a new board--all trees, one burning in the middle
     initializeSimBoard(size, simBoard);
-    
+
     // we're all set up, all that's left is actually simulating!
     runWildfire(statusFormatString, numberOfIterations, probability, size, simBoard);
-    
+
     // returns EXIT_SUCCESS upon completion
     return EXIT_SUCCESS;
 }
