@@ -26,34 +26,17 @@ static int probability;
 
 
 ///
-/// Function: getPrintCharacter
+/// Function: printFiresOut
 ///
-/// Description: Returns the character which should be printed.
+/// Description: prints a message saying that the fires are all out
 ///
-/// @param status  The current status of the cell on the board.
+/// @param numberOfChanges  The number of changes which happened before all fires
+///                         extinguished
 ///
-/// @return The character which should be printed.
-///
-static char getPrintChar(int value)
+static void printFiresOut(int numberOfChanges)
 {
-    // 0 is space
-    // 1 is alive tree
-    // 3 is burnt tree
-    // everything else is burning
-    switch(value)
-    {
-        case EMPTY_VALUE:
-            return EMPTY;
-            break;
-        case ALIVE_VALUE:
-            return ALIVE;
-            break;
-        case BURNT_VALUE:
-            return BURNT;
-            break;
-        default:
-            return BURNING;
-    }
+    // prints that we have run out of fires
+    printf("fires are out after %d cumulative changes\n", numberOfChanges);
 }
 
 
@@ -227,17 +210,34 @@ static int numberOfBurningTrees(int size, char simBoard[][size])
 
 
 ///
-/// Function: printFiresOut
+/// Function: getPrintCharacter
 ///
-/// Description: prints a message saying that the fires are all out
+/// Description: Returns the character which should be printed.
 ///
-/// @param numberOfChanges  The number of changes which happened before all fires
-///                         extinguished
+/// @param status  The current status of the cell on the board.
 ///
-static void printFiresOut(int numberOfChanges)
+/// @return The character which should be printed.
+///
+static char getPrintChar(int value)
 {
-    // prints that we have run out of fires
-    printf("fires are out after %d cumulative changes\n", numberOfChanges);
+    // 0 is space
+    // 1 is alive tree
+    // 3 is burnt tree
+    // everything else is burning
+    switch(value)
+    {
+        case EMPTY_VALUE:
+            return EMPTY;
+            break;
+        case ALIVE_VALUE:
+            return ALIVE;
+            break;
+        case BURNT_VALUE:
+            return BURNT;
+            break;
+        default:
+            return BURNING;
+    }
 }
 
 

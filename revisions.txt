@@ -1,3 +1,18 @@
+commit 9172e959df968b7fa3ae6ebe1f6958d0cabb039e
+Author: Kevin Joseph Becker <kjb2503@cs.rit.edu>
+Date:   Mon Feb 26 20:36:06 2018 -0500
+
+    Finished commenting everything out, and completed report.txt.
+    If I have more time I will begin working on the extra credit, but
+    only after I submit a working ``base'' version.
+
+commit 86da97710c575f358744b7e0d2d568951b5ce124
+Author: Kevin Joseph Becker <kjb2503@cs.rit.edu>
+Date:   Mon Feb 26 19:36:53 2018 -0500
+
+    A few changes to the flow of the program, all that's left is to
+    make sure the bases are covered before submission.
+
 commit 3b21b438d21848a2c392b052eb5d87974d5da8ab
 Author: Kevin Joseph Becker <kjb2503@cs.rit.edu>
 Date:   Sun Feb 25 19:58:43 2018 -0500

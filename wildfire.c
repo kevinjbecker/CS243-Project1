@@ -21,6 +21,66 @@ static int treeDensity, proportionBurning, probability;
 
 
 ///
+/// Function: printUsageMsg
+///
+/// Description: Displays the usage of the program.
+///
+/// @param *cmdUsed  The command used to start the program (for completely
+///                  accurate usage).
+///
+static void printUsageMsg(const char *cmdUsed)
+{
+    // prints our usage to stderr
+    fprintf(stderr, "Usage: %s [-pN] size probability treeDensity proportionBurning\
+    \nThe -pN option tells the simulation to print N cycles and stop.\
+    \nThe probability is the probability a tree will catch fire.\n", cmdUsed);
+    // exits our program with status of EXIT_FAILURE
+    exit(EXIT_FAILURE);
+}
+
+
+///
+/// Function: requiredArgumentError
+///
+/// Description: Prints out an argument error for the always required arguments
+///              if one is encountered in main.
+///
+/// @param *cmdUsed  The command used to start the program (for printUsageMsg).
+/// @param name  The name of the argument which was bad.
+/// @param value  The value given by the user.
+/// @param low  The low which the argument must be greater than or equal to.
+/// @param high  The high which the argument must be greater than or equal to.
+///
+static void requiredArgumentError(const char *cmdUsed, const char *name, 
+                          int value, int low, int high)
+{
+    // prints our error
+    fprintf(stderr, "The %s (%d) must be an integer within [%d-%d].\n", 
+        name, value, low, high);
+    // prints our usage message and exits the program
+    printUsageMsg(cmdUsed);
+}
+
+
+///
+/// Function: iterationsArgumentError
+///
+/// Description: Prints out an argument error if the number of iterations is no
+///              good.
+///
+/// @param *cmdUsed  The command used to start the program (for printUsageMsg).
+/// @param *whichErr  Which type of error was encountered (invalid/negative).
+///
+static void iterationsArgumentError(const char *cmdUsed, const char *whichErr)
+{
+    // prints our error
+    fprintf(stderr, "The -pN argument was %s", whichErr);
+    // prints our usage message and exits the program
+    printUsageMsg(cmdUsed);
+}
+
+
+///
 /// Function: generateSimBoard
 ///
 /// Description: Generates a starting life board with the number of organisms 
@@ -81,66 +141,6 @@ static void initializeSimBoard(int size, char simBoard[][size])
 }
 
 
-///
-/// Function: printUsageMsg
-///
-/// Description: Displays the usage of the program.
-///
-/// @param *cmdUsed  The command used to start the program (for completely
-///                  accurate usage)
-///
-static void printUsageMsg(const char *cmdUsed)
-{
-    // prints our usage to stderr
-    fprintf(stderr, "Usage: %s [-pN] size probability treeDensity proportionBurning\
-    \nThe -pN option tells the simulation to print N cycles and stop.\
-    \nThe probability is the probability a tree will catch fire.\n", cmdUsed);
-    // exits our program with status of EXIT_FAILURE
-    exit(EXIT_FAILURE);
-}
-
-
-///
-/// Function: requiredArgumentError
-///
-/// Description: Prints out an argument error for the always required arguments
-///              if one is encountered in main.
-///
-/// @param *cmdUsed  The command used to start the program (for printUsageMsg).
-/// @param name  The name of the argument which was bad.
-/// @param value  The value given by the user.
-/// @param low  The low which the argument must be greater than or equal to.
-/// @param high  The high which the argument must be greater than or equal to.
-///
-static void requiredArgumentError(const char *cmdUsed, const char *name, 
-                          int value, int low, int high)
-{
-    // prints our error
-    fprintf(stderr, "The %s (%d) must be an integer within [%d-%d].\n", 
-        name, value, low, high);
-    // prints our usage message and exits the program
-    printUsageMsg(cmdUsed);
-}
-
-
-///
-/// Function: iterationsArgumentError
-///
-/// Description: Prints out an argument error if the number of iterations is no
-///              good.
-///
-/// @param *cmdUsed  The command used to start the program (for printUsageMsg).
-/// @param *whichErr  Which type of error was encountered (invalid/negative).
-///
-static void iterationsArgumentError(const char *cmdUsed, const char *whichErr)
-{
-    // prints our error
-    fprintf(stderr, "The -pN argument was %s", whichErr);
-    // prints our usage message and exits the program
-    printUsageMsg(cmdUsed);
-}
-
-
 /// 
 /// Function: main
 ///
@@ -153,8 +153,7 @@ static void iterationsArgumentError(const char *cmdUsed, const char *whichErr)
 ///
 int main(int argc, char **argv)
 {
-    // checks to make sure we have the right number of command line arguments 
-    // (we need to abort otherwise)
+    // checks to make sure we have the right number of command line arguments
     // NOTE: if we have more than 7 arguments something is definitely wrong
     //       if we have exactly 7 things might be okay, will check once more
     //       later on
