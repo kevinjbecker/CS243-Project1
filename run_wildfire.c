@@ -279,7 +279,7 @@ static void printBoard(int cycle, int numberOfChanges, int size, char simBoard[]
 static void runIterations(int numberOfIterations, int size, char simBoard[][size])
 {
     // a few variables we
-    int numberOfChanges = 0, cycle = 0;
+    int numberOfChanges = 0, totalChanges = 0, cycle = 0;
     
     // we want to print out a cycle 0 therefore do{}while(...)
     do {
@@ -287,7 +287,8 @@ static void runIterations(int numberOfIterations, int size, char simBoard[][size
         printBoard(cycle, numberOfChanges, size, simBoard);
         
         // updates and adds the number of changes
-        numberOfChanges += update(size, simBoard);
+        numberOfChanges = update(size, simBoard);
+        totalChanges += numberOfChanges;
     } while(++cycle <= numberOfIterations && 
             numberOfBurningTrees(size, simBoard));  
     // the above while goes until all trees are burnt out, or we hit our number
@@ -299,7 +300,7 @@ static void runIterations(int numberOfIterations, int size, char simBoard[][size
         // prints our board
         printBoard(cycle, numberOfChanges, size, simBoard);
         // prints that our fires are out
-        printFiresOut(numberOfChanges);
+        printFiresOut(totalChanges);
     }
     
 }
@@ -320,7 +321,7 @@ static void runIndeterminate(int size, char simBoard[][size])
     clear();
     
     // sets our two variables we need to keep track of
-    int numberOfChanges = 0, cycle = 0;
+    int numberOfChanges = 0, totalChanges = 0, cycle = 0;
     
     // keeps going until our trees are out, or user hits CTRL-C
     // if loop exits, numberOfBurningTrees returns 0;
@@ -335,7 +336,10 @@ static void runIndeterminate(int size, char simBoard[][size])
         usleep(750000);
         
         // updates our board adding the return value to numberOfChanges
-        numberOfChanges += update(size, simBoard);
+        numberOfChanges = update(size, simBoard);
+        
+        // keeps track of our total changes
+        totalChanges += numberOfChanges;
         
         // lastly we need to add to our cycle number
         ++cycle;
@@ -347,7 +351,7 @@ static void runIndeterminate(int size, char simBoard[][size])
     printBoard(cycle, numberOfChanges, size, simBoard);
     
     // lastly prints that our fires are out
-    printFiresOut(numberOfChanges);
+    printFiresOut(totalChanges);
 }
 
 
