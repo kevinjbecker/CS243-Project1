@@ -335,6 +335,12 @@ static void runIndeterminate(int size, char simBoard[][size])
 
         // sleeps for 750ms
         usleep(750000);
+        usleep(750000);
+        usleep(750000);
+        usleep(750000);
+        usleep(750000);
+        usleep(750000);
+        usleep(750000);
 
         // updates our board adding the return value to numberOfChanges
         numberOfChanges = update(size, simBoard);

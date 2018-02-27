@@ -195,14 +195,15 @@ int main(int argc, char **argv)
     // builds a format string
     // it's a little funky here, but our input parameters remain constant so
     // we don't need to continually keep putting them in.
+    // the maximum number of changes per iteration is 1600 so there are two extra
+    // spaces printed
     char statusFormatString[] = "cycle %s, size %d, probability %.2f, density "
-                          "%.2f, proportion %.2f, changes %s\n";
+                          "%.2f, proportion %.2f, changes %s \n";
     // formats our format string so that everything is print correctly
     // we are printing to our format string using our format string, the %s will be
-    // the two non-constant values changing between each iteration, one being a
-    // digit and the other being a 3 digit left-padded number
+    // the two non-constant integers changing between each iteration
     sprintf(statusFormatString, statusFormatString, "%d", size, (probability/100.0),
-            (treeDensity/100.0), (proportionBurning/100.0),"%-3d");
+            (treeDensity/100.0), (proportionBurning/100.0),"%d");
 
     // goes through and checks each command line argument for correct formatting
     if(size < 5|| size > 40)
