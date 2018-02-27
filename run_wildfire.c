@@ -1,11 +1,7 @@
 ///
+/// File: run_wildfire.c
 ///
-///
-///
-///
-///
-///
-///
+/// @author kjb2503 : Kevin Becker
 ///
 // // // // // // // // // // // // // // // // // // // // // // //
 
@@ -18,9 +14,6 @@
 
 // NEIGHBOR_DNE is used in shouldChange
 #define NEIGHBOR_DNE -1
-
-// pulls in our information from the other file
-int probability, numberOfIterations;
 
 
 ///
@@ -36,7 +29,7 @@ static char getPrintChar(int value)
 {
     // 0 is space
     // 1 is alive tree
-    // -1 is burnt tree
+    // 3 is burnt tree
     // everything else is burning
     switch(value)
     {
@@ -55,15 +48,30 @@ static char getPrintChar(int value)
 }
 
 
+///
+/// Function: shouldChange
+///
+/// Description: Determines if a cell is allowed to ``change'' to a different
+///              status. (i.e. ALIVE to BURNING, BURNING to BURNT, etc.).
+///
+/// @param row  The row of the cell we are checking.
+/// @param col  The column of the cell we are checking.
+/// @param size  The size of the board.
+/// @param simBoard  The simulation board.
+///
+/// @return an integer; 0 if should NOT change, 1 otherwise.
+///
 static int shouldChange(int row, int col, int size, char simBoard[][size])
 {
-    int totalNeighbors = 0;
-    float totalBurning = 0.0;
-    
-    // returns ``true'' if the tree is already burning
-    // (this only affects non-burning trees)
+    // returns 1 if the tree is already burning
+    // (the next logic only affects non-burning trees)
     if(simBoard[row][col] == BURNING_VALUE)
         return 1;
+
+    // the total neighbors
+    int totalNeighbors = 0;
+    // the total neighbors which are BURNING
+    float totalBurning = 0.0;
     
     // if we get here we are alive, and need to check neighbors
     // can't have NE neighbor if at row 0 OR col 0
@@ -128,13 +136,16 @@ static int shouldChange(int row, int col, int size, char simBoard[][size])
 
 
 ///
+/// Function: update
 ///
+/// Description: Updates the wildfire simulation board for the next cycle.
 ///
-///
+/// @param size  The size of the board.
+/// @param simBoard  The simulation board.
 ///
 /// @return the number of changes this iteration
 ///
-static int update(int size, char simBoard[][size])
+static int update(int probability, int size, char simBoard[][size])
 {
     int row, col, numberOfChanges = 0;
     
@@ -149,55 +160,41 @@ static int update(int size, char simBoard[][size])
                 case BURNT_VALUE:
                     nextCycle[row][col] = simBoard[row][col];
                     break;
-                // if we are alive or burning, we need to do some logic
+                // if we are alive or burning, we need to do some logic (shares
+                // a lot of the same conditions so we only use single case)
                 default:
-                    if(shouldChange(row, col, size, simBoard)
-                        && (rand()%100) < probability)
+                    // if we should change and probability is met
+                    if(shouldChange(row, col, size, simBoard) && 
+                       (rand()%100) < probability)
                     {
-                        // set the tree on fire/extinguish if prob good
+                        // set the tree on fire/extinguish
                         nextCycle[row][col] = (simBoard[row][col] == ALIVE_VALUE) ? 
                                                 BURNING_VALUE : BURNT_VALUE;
                         // record the change
                         ++numberOfChanges;
                     }
+                    // otherwise we stay the same
                     else
                         nextCycle[row][col] = simBoard[row][col];
             }
     
-    // copies over new cycle
+    // copies over new cycle to simBoard
     for(row = 0; row < size; ++row)
         for(col = 0; col < size; ++col)
             simBoard[row][col] = nextCycle[row][col];
-    
+    // returns the number of changes
     return numberOfChanges;
 }
 
-
-static void runIterations(const char *statusFormatString, int size, char simBoard[][size])
-{
-    // a few variables we
-    int numberOfChanges = 0;
-   
-    // goes through from 0 to the number of iterations requested
-    for(int cycle = 0; cycle <= numberOfIterations; ++cycle)
-    {
-        // prints our board
-        for(int row = 0; row < size; ++row)
-        {
-            for(int col = 0; col < size; ++col)
-                printf("%c", getPrintChar(simBoard[row][col]));
-            puts(" ");
-        }
-        
-        // prints our status
-        printf(statusFormatString, cycle, numberOfChanges);
-        
-        // updates and adds the number of changes
-        numberOfChanges += update(size, simBoard);
-    }
-}
-
-
+///
+/// Function: numberOfBurningTrees
+///
+/// Description: Returns the number of burning trees (used to stop simulation if
+///              returned value is 0).
+///
+/// @param size  The size of the board.
+/// @param simBoard  The simulation board.
+///
 static int numberOfBurningTrees(int size, char simBoard[][size])
 {
     int burningTrees = 0;
@@ -216,7 +213,84 @@ static int numberOfBurningTrees(int size, char simBoard[][size])
     return burningTrees;
 }
 
-static void updateBoard(const char *statusFormatString, int cycle,
+
+static void printFiresOut(int numberOfChanges)
+{
+    // prints that we have run out of fires
+    printf("fires are out after %d cumulative changes\n", numberOfChanges);
+}
+
+
+static void printBoard(const char *statusFormatString, int cycle, 
+                       int numberOfChanges, int size, char simBoard[][size])
+{
+    // prints our board
+    for(int row = 0; row < size; ++row)
+    {
+        for(int col = 0; col < size; ++col)
+            printf("%c", getPrintChar(simBoard[row][col]));
+        puts(" ");
+    }
+
+    // prints our status
+    printf(statusFormatString, cycle, numberOfChanges);
+}
+
+
+///
+/// Function: runIterations
+///
+/// Description: Runs a specified number of iterations of wildfire printing out
+///              each iteration.
+///
+/// @param *statusFormatString  A format string used to print out status.
+/// @param numberOfIterations  The number of iterations to run (-1 = indeterminate).
+/// @param probability  The probability of tree catching fire/extinguishing.
+/// @param size  The size of the board.
+/// @param simBoard  The simulation board.
+///
+static void runIterations(const char *statusFormatString, int numberOfIterations,
+                          int probability, int size, char simBoard[][size])
+{
+    // a few variables we
+    int numberOfChanges = 0, cycle = 0;
+    
+    // we want to print out a cycle 0 therefore do{}while(...)
+    do {
+        // prints our board
+        printBoard(statusFormatString, cycle, numberOfChanges, size, simBoard);
+        
+        // updates and adds the number of changes
+        numberOfChanges += update(probability, size, simBoard);
+    } while(++cycle <= numberOfIterations && 
+            numberOfBurningTrees(size, simBoard));  
+    // the above while goes until all trees are burnt out, or we hit our number
+    // of iterations
+    
+    // if no trees burning still, print message telling that all fires are out
+    if(!numberOfBurningTrees(size, simBoard))
+    {
+        // prints our board
+        printBoard(statusFormatString, cycle, numberOfChanges, size, simBoard);
+        // prints that our fires are out
+        printFiresOut(numberOfChanges);
+    }
+    
+}
+
+
+///
+/// Function: updateDisplayedBoard
+///
+/// Description: Updates the displayed board on the screen.
+///
+/// @param *statusFormatString  A format string used to print out status.
+/// @param cycle  The current cycle number.
+/// @param numberOfChanges  The total number of changes in the simulation.
+/// @param size  The size of the board.
+/// @param simBoard  The simulation board.
+///
+static void updateDisplayedBoard(const char *statusFormatString, int cycle,
                        int numberOfChanges, int size, char simBoard[][size])
 {
     for(int row = 0; row < size; ++row)
@@ -236,7 +310,19 @@ static void updateBoard(const char *statusFormatString, int cycle,
 }
 
 
-static void runIndeterminate(const char *statusFormatString, int size, char simBoard[][size])
+///
+/// Function: runIndeterminate
+///
+/// Description: The indeterminate version of the wildfire simulation. Uses
+///              cursor controlled output to overlay each cycle of the simulation.
+///
+/// @param *statusFormatString  A format string used to print out status.
+/// @param probability  The probability of tree catching fire/extinguishing.
+/// @param size  The size of the board.
+/// @param simBoard  The simulation board.
+///
+static void runIndeterminate(const char *statusFormatString, int probability, 
+                             int size, char simBoard[][size])
 {
     // clears the screen and set cursor to top left before we do anything else
     clear();
@@ -248,7 +334,8 @@ static void runIndeterminate(const char *statusFormatString, int size, char simB
     // if loop exits, numberOfBurningTrees returns 0;
     while(numberOfBurningTrees(size, simBoard))
     {
-        updateBoard(statusFormatString, cycle, numberOfChanges, size, simBoard);
+        // updates our displayed board
+        updateDisplayedBoard(statusFormatString, cycle, numberOfChanges, size, simBoard);
         
         set_cur_pos(size+2, 0);
         printf("4\n");
@@ -264,26 +351,42 @@ static void runIndeterminate(const char *statusFormatString, int size, char simB
         printf("1\n");
         usleep(1000000);
         
-        // updates our board
-        numberOfChanges += update(size, simBoard);
+        // updates our board adding the return value to numberOfChanges
+        numberOfChanges += update(probability, size, simBoard);
         
         // lastly we need to add to our cycle number
         ++cycle;
     }
     
     // prints our board one last time
-    updateBoard(statusFormatString, cycle, numberOfChanges, size, simBoard);
+    updateDisplayedBoard(statusFormatString, cycle, numberOfChanges, size, simBoard);
+    
+    printFiresOut(numberOfChanges);
+    
     // once we exit the loop, we can print that we have completed
     printf("fires are out after %d cumulative changes\n", numberOfChanges);
 }
 
 
-void runWildfire(const char *statusFormatString, int size, char simBoard[][size])
+///
+/// Function: runWildfire
+///
+/// Description: Runs a simulation of wildfire
+///
+/// @param *statusFormatString  A format string used to print out status.
+/// @param numberOfIterations  The number of iterations to run (-1 = indeterminate).
+/// @param probability  The probability of tree catching fire/extinguishing.
+/// @param size  The size of the board.
+/// @param simBoard  The simulation board.
+///
+void runWildfire(const char *statusFormatString, int numberOfIterations, 
+                 int probability, int size, char simBoard[][size])
 {
+    // determines if user wanted a specific number of iterations
     if(numberOfIterations != -1)
-        runIterations(statusFormatString, size, simBoard);
+        runIterations(statusFormatString, numberOfIterations, probability, 
+                      size, simBoard);
     else
-        runIndeterminate(statusFormatString, size, simBoard);
+        runIndeterminate(statusFormatString, probability, size, simBoard);
 }
-
 

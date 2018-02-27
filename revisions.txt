@@ -1,3 +1,10 @@
+commit 3b21b438d21848a2c392b052eb5d87974d5da8ab
+Author: Kevin Joseph Becker <kjb2503@cs.rit.edu>
+Date:   Sun Feb 25 19:58:43 2018 -0500
+
+    Finalized the update method so that the simulation runs smooth.
+    Commencing the start of commenting.
+
 commit e332d44275a651a4aad6141701550fc8faa32044
 Author: Kevin Joseph Becker <kjb2503@cs.rit.edu>
 Date:   Sat Feb 24 19:40:46 2018 -0500

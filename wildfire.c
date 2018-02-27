@@ -1,11 +1,5 @@
 ///
-///
-///
-///
-///
-///
-///
-///
+/// File: wildfire.c
 ///
 /// @author: kjb2503 : Kevin Becker
 ///
@@ -19,43 +13,8 @@
 #include "run_wildfire.h" // runIterataions, runIndeterminate
 #include "wildfire_values.h" // all of the shared values
 
-// the shared ints we will need to run
-extern int probability;
-int numberOfIterations = -1;
-
 // some things we need to use globally in just this file
-static int treeDensity, proportionBurning;
-
-///
-/// Function: printUsageMsg
-///
-/// Description: Displays the usage of the program.
-///
-static void printUsageMsg(char *cmdUsed)
-{
-    // prints our usage to stderr
-    fprintf(stderr, "Usage: %s [-pN] size probability treeDensity proportionBurning\
-    \nThe -pN option tells the simulation to print N cycles and stop.\
-    \nThe probability is the probability a tree will catch fire.\n", cmdUsed);
-    // exits our program
-    exit(EXIT_FAILURE);
-}
-
-
-///
-/// Function: argumentError
-///
-/// Description: 
-///
-/// @param name
-/// @param value
-///
-static void argumentError(char *cmdUsed, char *name, int value, char *constraints)
-{
-    fprintf(stderr, "The %s (%d) must be an integer %s.\n", 
-        name, value, constraints);
-    printUsageMsg(cmdUsed);
-}
+static int treeDensity, proportionBurning, probability;
 
 
 ///
@@ -119,6 +78,66 @@ static void initializeSimBoard(int size, char simBoard[][size])
 }
 
 
+///
+/// Function: printUsageMsg
+///
+/// Description: Displays the usage of the program.
+///
+/// @param *cmdUsed  The command used to start the program (for completely
+///                  accurate usage)
+///
+static void printUsageMsg(const char *cmdUsed)
+{
+    // prints our usage to stderr
+    fprintf(stderr, "Usage: %s [-pN] size probability treeDensity proportionBurning\
+    \nThe -pN option tells the simulation to print N cycles and stop.\
+    \nThe probability is the probability a tree will catch fire.\n", cmdUsed);
+    // exits our program with status of EXIT_FAILURE
+    exit(EXIT_FAILURE);
+}
+
+
+///
+/// Function: requiredArgumentError
+///
+/// Description: Prints out an argument error for the always required arguments
+///              if one is encountered in main.
+///
+/// @param *cmdUsed  The command used to start the program (for printUsageMsg).
+/// @param name  The name of the argument which was bad.
+/// @param value  The value given by the user.
+/// @param low  The low which the argument must be greater than or equal to.
+/// @param high  The high which the argument must be greater than or equal to.
+///
+static void requiredArgumentError(const char *cmdUsed, const char *name, 
+                          int value, int low, int high)
+{
+    // prints our error
+    fprintf(stderr, "The %s (%d) must be an integer within [%d-%d].\n", 
+        name, value, low, high);
+    // prints our usage message and exits the program
+    printUsageMsg(cmdUsed);
+}
+
+
+///
+/// Function: iterationsArgumentError
+///
+/// Description: Prints out an argument error if the number of iterations is no
+///              good.
+///
+/// @param *cmdUsed  The command used to start the program (for printUsageMsg).
+/// @param *whichErr  Which type of error was encountered (invalid/negative).
+///
+static void iterationsArgumentError(const char *cmdUsed, const char *whichErr)
+{
+    // prints our error
+    fprintf(stderr, "The -pN argument was %s", whichErr);
+    // prints our usage message and exits the program
+    printUsageMsg(cmdUsed);
+}
+
+
 /// 
 /// Function: main
 ///
@@ -133,12 +152,14 @@ int main(int argc, char **argv)
 {
     // checks to make sure we have the right number of command line arguments 
     // (we need to abort otherwise)
-    if(argc < 5 || argc > 6)
+    // NOTE: if we have more than 7 arguments something is definitely wrong
+    //       if we have exactly 7 things might be okay
+    if(argc < 5 || argc > 7)
         // prints our usage
         printUsageMsg(argv[0]);
     
     // we set it to -1 (changed if we do not want to go forever)
-    int opt, size;
+    int opt, size, numberOfIterations = -1;
         
     while((opt = getopt(argc, argv, "p:")) != -1)
     {
@@ -148,11 +169,16 @@ int main(int argc, char **argv)
             // pull in our number of iterations to complete
             case 'p':
                 numberOfIterations = strtol(optarg, NULL, 10);
+                if(numberOfIterations < 0)
+                    iterationsArgumentError(argv[0], "negative");
                 break;
             default:
                 printUsageMsg(argv[0]);
         }
     }
+    
+    if(argc > 6 && numberOfIterations == -1)
+        printUsageMsg(argv[0]);
     
     // reads in our size, prob, density and proportion values to variables
     size = strtol(argv[optind], NULL, 10);
@@ -170,16 +196,14 @@ int main(int argc, char **argv)
             (treeDensity/100.0), (proportionBurning/100.0),"%d");
 
     // goes through and checks each command line argument for correct formatting
-    if(numberOfIterations < 0 && argc == 6)
-        argumentError(argv[0], "number of iterations", numberOfIterations, "greater than 0");
     if(size < 5|| size > 40)
-        argumentError(argv[0], "size", size, "within [5-40]");
+        requiredArgumentError(argv[0], "size", size, 5, 40);
     if (probability < 0 || probability > 100)
-        argumentError(argv[0], "probability", probability, "within [0-100]");
+        requiredArgumentError(argv[0], "probability", probability, 0, 100);
     if (treeDensity < 0 || treeDensity > 100)
-        argumentError(argv[0], "tree density", treeDensity, "within [0-100]");
+        requiredArgumentError(argv[0], "tree density", treeDensity, 0, 100);
     if (proportionBurning < 0 || proportionBurning > 100)
-        argumentError(argv[0], "proportion", proportionBurning, "within [0-100]");
+        requiredArgumentError(argv[0], "proportion", proportionBurning, 0, 100);
     
     // BOARD GENERATION SEQUENCE ===============================================
     
@@ -189,9 +213,10 @@ int main(int argc, char **argv)
     // generates a new board--all trees, one burning in the middle
     initializeSimBoard(size, simBoard);
     
-    // we're all set up we can begin simulating
-    // if we have a set number of iterations: run that procedure
-    runWildfire(statusFormatString, size, simBoard);
-
+    // we're all set up, all that's left is actually simulating!
+    runWildfire(statusFormatString, numberOfIterations, probability, size, simBoard);
+    
+    // returns EXIT_SUCCESS upon completion
     return EXIT_SUCCESS;
 }
+
