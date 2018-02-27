@@ -1,3 +1,9 @@
+commit d9c621eaf3d08503a9fae5eaca3cf52227d8156e
+Author: Kevin Joseph Becker <kjb2503@cs.rit.edu>
+Date:   Tue Feb 27 13:27:49 2018 -0500
+
+    One last usage message difference ("within"->"in")
+
 commit 2dc389b4e8efe8b778107996706ed47c39e5ca80
 Author: Kevin Joseph Becker <kjb2503@cs.rit.edu>
 Date:   Tue Feb 27 13:26:31 2018 -0500

@@ -36,7 +36,7 @@ static int probability;
 static void printFiresOut(int numberOfChanges)
 {
     // prints that we have run out of fires
-    printf("fires are out after %d cumulative changes\n", numberOfChanges);
+    printf("fires are out after %d cumulative changes.\n", numberOfChanges);
 }
 
 

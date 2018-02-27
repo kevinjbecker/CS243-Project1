@@ -211,7 +211,7 @@ int main(int argc, char **argv)
     if (probability < 0 || probability > 100)
         requiredArgumentError(argv[0], "probability", probability, 0, 100);
     if (treeDensity < 0 || treeDensity > 100)
-        requiredArgumentError(argv[0], "tree density", treeDensity, 0, 100);
+        requiredArgumentError(argv[0], "density", treeDensity, 0, 100);
     if (proportionBurning < 0 || proportionBurning > 100)
         requiredArgumentError(argv[0], "proportion", proportionBurning, 0, 100);
 
