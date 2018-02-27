@@ -55,7 +55,7 @@ static void requiredArgumentError(const char *cmdUsed, const char *name,
                           int value, int low, int high)
 {
     // prints our error
-    fprintf(stderr, "The %s (%d) must be an integer within [%d...%d].\n",
+    fprintf(stderr, "The %s (%d) must be an integer in [%d...%d].\n",
         name, value, low, high);
     // prints our usage message and exits the program
     printUsageMsg(cmdUsed);
