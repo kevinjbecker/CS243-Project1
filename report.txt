@@ -1,7 +1,7 @@
 Assignment Report
 Assignment name is: Wildfire
-My name is: 			<<<ENTER YOUR NAME>>>
-My login ID is:			<<<ENTER YOUR CS LOGIN ID>>>
+My name is: 			Kevin Becker
+My login ID is:			kjb2503
 
 [insert your answers after the question and add more lines as needed.]
 
@@ -19,7 +19,9 @@ What is the status of the program?
 	[you will lose fewer points if 
 	 you clearly describe the problems
 	 and your work to solve those problems.]
-
+ *  My program is in fully working status to the specifications requested.
+ *  Program ``runs right'' and switches between modes depending on how program
+    started.
 
 
 
@@ -35,24 +37,31 @@ If you implemented extra credit or special, describe your results here.
 
 What did I learn?
 
-
+I learned how to use arrays in C as well as other C standard utilities like the
+getopt function as well as getting a solid understanding of proper C syntax.
 
 
 What was easy about this assignment?
 
-
+It was relatively easy to get the simulation set up as it was a pretty close 
+match to the lab we had done before with Game of Life.
 
 
 What gave you problems or troubles?
 
-
+I encountered a few problems with the logic of trees catching fire (what counts
+as neighbors, etc.).  All easily overcome with a bit of time and thought.
 
 
 What would you like the instructor to do to improve this assignment?
 
-
+The assignment write-up was a bit unclear at points, it would be a great 
+improvement to clean it up and make it a bit more concise.  As it stands, it is
+very cluttered, but not to the point of confusion.
 
 
 What would you have liked to do in this assignment?
 
-
+I really would have liked to have more time to create more of the extra credit
+options, they seemed like a fun challenge to tackle, and certainly doable with a
+bit more time.

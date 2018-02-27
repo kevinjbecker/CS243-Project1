@@ -1,6 +1,9 @@
 ///
 /// File: wildfire.c
 ///
+/// Description: Creates an instance of a wildfire simulation using the rules
+///              provided in [Shiflet] and a few modifications.
+///
 /// @author: kjb2503 : Kevin Becker
 ///
 // // // // // // // // // // // // // // // // // // // // // // // // // // //
@@ -13,7 +16,7 @@
 #include "run_wildfire.h" // runIterataions, runIndeterminate
 #include "wildfire_values.h" // all of the shared values
 
-// some things we need to use globally in just this file
+// some things we need to use globally which will not change once set
 static int treeDensity, proportionBurning, probability;
 
 
@@ -153,7 +156,8 @@ int main(int argc, char **argv)
     // checks to make sure we have the right number of command line arguments 
     // (we need to abort otherwise)
     // NOTE: if we have more than 7 arguments something is definitely wrong
-    //       if we have exactly 7 things might be okay
+    //       if we have exactly 7 things might be okay, will check once more
+    //       later on
     if(argc < 5 || argc > 7)
         // prints our usage
         printUsageMsg(argv[0]);
@@ -177,6 +181,8 @@ int main(int argc, char **argv)
         }
     }
     
+    // last minute effort, if we have more than 6 arguments and no changes made
+    // to numberOfIterations, we have an issue and cannot move forward.
     if(argc > 6 && numberOfIterations == -1)
         printUsageMsg(argv[0]);
     
@@ -189,8 +195,8 @@ int main(int argc, char **argv)
     // builds a format string
     // it's a little funky here, but our input parameters remain constant so
     // we don't need to continually keep putting them in.
-    char statusFormatString[] = "cycle %s, size %d, probability %.2f, density %.2f,"
-                          " proportion %.2f, changes %s\n";
+    char statusFormatString[] = "cycle %s, size %d, probability %.2f, density "
+                          "%.2f, proportion %.2f, changes %s\n";
     // formats our format string so that everything is print correctly
     sprintf(statusFormatString, statusFormatString, "%d", size, (probability/100.0), 
             (treeDensity/100.0), (proportionBurning/100.0),"%d");
