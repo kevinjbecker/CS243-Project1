@@ -71,7 +71,7 @@ static void requiredArgumentError(const char *cmdUsed, const char *name,
 /// @param *cmdUsed  The command used to start the program (for printUsageMsg).
 /// @param *whichErr  Which type of error was encountered (invalid/negative).
 ///
-static void iterationsArgumentError(const char *cmdUsed, const char *whichErr)
+static void printFlagError(const char *cmdUsed, const char *whichErr)
 {
     // prints our error
     fprintf(stderr, "The -pN argument was %s", whichErr);
@@ -173,7 +173,7 @@ int main(int argc, char **argv)
             case 'p':
                 numberOfIterations = strtol(optarg, NULL, 10);
                 if(numberOfIterations < 0)
-                    iterationsArgumentError(argv[0], "negative");
+                    printFlagError(argv[0], "negative");
                 break;
             default:
                 printUsageMsg(argv[0]);
@@ -181,9 +181,10 @@ int main(int argc, char **argv)
     }
     
     // last minute effort, if we have more than 6 arguments and no changes made
-    // to numberOfIterations, we have an issue and cannot move forward.
+    // to numberOfIterations, we have an issue and cannot move forward
+    // NOTE: if we get here, the p flag was included but was invalid
     if(argc > 6 && numberOfIterations == -1)
-        printUsageMsg(argv[0]);
+        printFlagError(argv[0], "invalid");
     
     // reads in our size, prob, density and proportion values to variables
     size = strtol(argv[optind], NULL, 10);
