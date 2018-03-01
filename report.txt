@@ -19,7 +19,7 @@ What is the status of the program?
 	[you will lose fewer points if 
 	 you clearly describe the problems
 	 and your work to solve those problems.]
- *  My program is in fully working status to the specifications requested, 
+ *  My program is in ``fully working'' status to the specifications requested; 
     everything has been fulfilled.
  *  Program ``runs right'' and switches between modes depending on how program
     started.
@@ -31,7 +31,7 @@ If you implemented extra credit or special, describe your results here.
 
 [see the writeup for extra credit requirements if this applies to your work.]
 
- *  N/A
+ *  N/A; no extra credit implemented
 
 
 ============= GENERAL PROJECT FEEDBACK ==============
@@ -47,7 +47,8 @@ What was easy about this assignment?
 
 It was relatively easy to get the simulation set up as it was a pretty close 
 match to the lab we had done before with Game of Life. Aditionally using the
-display functions provided in display.c were easy to use as well.
+display functions provided in display.c were easy to use as, again, we had
+already used them.
 
 
 What gave you problems or troubles?

@@ -74,7 +74,7 @@ static void requiredArgumentError(const char *cmdUsed, const char *name,
 static void printFlagError(const char *cmdUsed, const char *whichErr)
 {
     // prints our error
-    fprintf(stderr, "The -pN argument was %s.", whichErr);
+    fprintf(stderr, "The -pN argument was %s.\n", whichErr);
     // prints our usage message and exits the program
     printUsageMsg(cmdUsed);
 }
@@ -153,17 +153,25 @@ static void initializeSimBoard(int size, char simBoard[][size])
 ///
 int main(int argc, char **argv)
 {
-    // checks to make sure we have the right number of command line arguments
-    // NOTE: if we have more than 7 arguments something is definitely wrong
-    //       if we have exactly 7 things might be okay, will check once more
-    //       later on
-    if(argc < 5 || argc > 7)
-        // prints our usage
+    // if we have less than 5 arguments, it is a usage issue
+    if(argc < 5)
         printUsageMsg(argv[0]);
+
+    // if argc more than 6, might be a p flag issue or just a usage issue
+    if(argc > 6)
+    {        
+        // if p is included, this means we have an invalid p
+        if(getopt(argc, argv, "p") == 'p')
+            printFlagError(argv[0], "invalid");
+        else
+            // prints our usage
+            printUsageMsg(argv[0]);
+    }
 
     // we set it to -1 (changed if we do not want to go forever)
     int opt, size, numberOfIterations = -1;
 
+    // this is always run just to make sure we have no excess flags
     while((opt = getopt(argc, argv, "p:")) != -1)
     {
         switch(opt)
@@ -172,19 +180,26 @@ int main(int argc, char **argv)
             // pull in our number of iterations to complete
             case 'p':
                 numberOfIterations = strtol(optarg, NULL, 10);
+                // if p is negative, that's no good
                 if(numberOfIterations < 0)
                     printFlagError(argv[0], "negative");
+                // if our flag isn't the first included argument, it's wrong
+                // NOTE: this also means that if program is run using:
+                // wildfire -p N size prob dens prop
+                // it is also incorrect (N must be included next to flag)
+                if(optind > 2)
+                    printFlagError(argv[0], "invalid");
                 break;
             default:
                 printUsageMsg(argv[0]);
         }
     }
 
-    // last minute effort, if we have more than 6 arguments and no changes made
-    // to numberOfIterations, we have an issue and cannot move forward
-    // NOTE: if we get here, the p flag was included but was invalid
-    if(argc > 6 && numberOfIterations == -1)
-        printFlagError(argv[0], "invalid");
+    // last check before starting, if we have 6 arguments and no changes made
+    // to numberOfIterations, OR if we do have a proper flag, but not enough 
+    // remaining arguments to start, we have an issue and cannot move forward
+    if((argc == 6 && numberOfIterations == -1) || (argc-optind < 4))
+        printUsageMsg(argv[0]);
 
     // reads in our size, prob, density and proportion values to variables
     size = strtol(argv[optind], NULL, 10);

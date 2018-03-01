@@ -1,3 +1,9 @@
+commit ad7abed96703d0751734c3f286991235542291cc
+Author: Kevin Joseph Becker <kjb2503@cs.rit.edu>
+Date:   Tue Feb 27 13:30:20 2018 -0500
+
+    One final output issue (a period after "fires are out after...")
+
 commit d9c621eaf3d08503a9fae5eaca3cf52227d8156e
 Author: Kevin Joseph Becker <kjb2503@cs.rit.edu>
 Date:   Tue Feb 27 13:27:49 2018 -0500
