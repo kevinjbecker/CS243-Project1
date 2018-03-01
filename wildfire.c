@@ -159,7 +159,7 @@ int main(int argc, char **argv)
 
     // if argc more than 6, might be a p flag issue or just a usage issue
     if(argc > 6)
-    {        
+    {
         // if p is included, this means we have an invalid p
         if(getopt(argc, argv, "p") == 'p')
             printFlagError(argv[0], "invalid");
@@ -196,7 +196,7 @@ int main(int argc, char **argv)
     }
 
     // last check before starting, if we have 6 arguments and no changes made
-    // to numberOfIterations, OR if we do have a proper flag, but not enough 
+    // to numberOfIterations, OR if we do have a proper flag, but not enough
     // remaining arguments to start, we have an issue and cannot move forward
     if((argc == 6 && numberOfIterations == -1) || (argc-optind < 4))
         printUsageMsg(argv[0]);

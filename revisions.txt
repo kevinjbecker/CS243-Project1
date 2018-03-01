@@ -1,3 +1,11 @@
+commit f77e71700c7a99b12c567d6523003315b430f754
+Author: Kevin Joseph Becker <kjb2503@cs.rit.edu>
+Date:   Thu Mar 1 11:48:46 2018 -0500
+
+    Fixed a small issue where a too many, or not enough arguments were
+    supplied but the program would start anyway, now fixed and program
+    only runs when it is supposed to.
+
 commit ad7abed96703d0751734c3f286991235542291cc
 Author: Kevin Joseph Becker <kjb2503@cs.rit.edu>
 Date:   Tue Feb 27 13:30:20 2018 -0500
